@@ -4,7 +4,8 @@
   "description": "book shop on javascript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "live-server",
+    "build": "rollup"
   },
   "keywords": [
     "books",
@@ -12,5 +13,9 @@
     "js"
   ],
   "author": "uniqcle",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "rollup": "^4.6.1"
+  }
 }
