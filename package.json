@@ -1,0 +1,16 @@
+{
+  "name": "book-app",
+  "version": "1.0.0",
+  "description": "book shop on javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "books",
+    "shop",
+    "js"
+  ],
+  "author": "uniqcle",
+  "license": "ISC"
+}
