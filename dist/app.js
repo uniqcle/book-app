@@ -1035,9 +1035,26 @@
       this.el.innerHTML = "";
       this.el.classList.add("header");
       this.el.innerHTML = `
-		<div>
-			<img src='/static/logo.svg' alt='logo' />
+		<div class="logo">
+      <a href="/">
+			<img class="" src='/static/logo.png' alt='logo' />
+      </a>
 		</div>
+    <div class="menu">
+      <a class="menu__item" href="#">
+        <img src='/static/search.svg' alt='Search' />
+        Search Books
+      </a>
+
+            <a class="menu__item" href="#favourites">
+        <img src='/static/favorites.svg' alt='favourites' />
+        Favourites
+
+        <div class="menu__counter">
+          ${this.appState.favourites.length}
+        </div>
+      </a>
+    </div>
 		`;
       return this.el;
     }
@@ -1055,7 +1072,7 @@
       super();
       this.appState = appState;
       this.appState = onChange(this.appState, this.appStateHook.bind(this));
-      this.setTitle("Поиск книг");
+      this.setTitle("Search books");
     }
 
     appStateHook(path) {
@@ -1071,7 +1088,6 @@
       this.app.innerHTML = "";
       this.app.append(main);
       this.renderHeader();
-      this.appState.favourites.push("3");
     }
 
     renderHeader() {

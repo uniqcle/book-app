@@ -1,0 +1,20 @@
+body{
+	font-family: 'Kalnia', serif;
+	color: var(--brown); 
+	background-color: #FEFEFE; 
+}
+
+*{
+	margin: 0; 
+	padding: 0; 
+}
+
+:root{
+	--brown: #341801; 
+	--white: #FEFEFE; 
+}
+
+#root{
+	max-width: 960px;
+	margin: 0 auto;  
+}

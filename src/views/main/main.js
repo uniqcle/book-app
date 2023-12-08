@@ -14,7 +14,7 @@ export class MainView extends AbstractView {
     super();
     this.appState = appState;
     this.appState = onChange(this.appState, this.appStateHook.bind(this));
-    this.setTitle("Поиск книг");
+    this.setTitle("Search books");
   }
 
   appStateHook(path) {
@@ -30,7 +30,6 @@ export class MainView extends AbstractView {
     this.app.innerHTML = "";
     this.app.append(main);
     this.renderHeader();
-    this.appState.favourites.push("3");
   }
 
   renderHeader() {
