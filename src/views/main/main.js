@@ -2,6 +2,7 @@ import { AbstractView } from "../../common/view.js";
 import onChange from "on-change";
 import { Header } from "../../components/header/header.js";
 import { Search } from "../../components/search/search.js";
+import { CardList } from "../../components/cardList/cardlist.js";
 
 export class MainView extends AbstractView {
   state = {
@@ -29,14 +30,17 @@ export class MainView extends AbstractView {
 
   async stateHook(path) {
     if (path === "searchQuery") {
-      //this.render();
+      this.state.loading = true;
+      const data = await this.getBooks(
+        this.state.stateQuery,
+        this.state.offset
+      );
+      this.state.loading = false;
+      this.state.list = data.docs;
+    }
 
-      console.log(this.state);
-      this.state.loading = true; 
-      const data = await this.getBooks(this.state.stateQuery, this.state.offset); 
-      this.state.loading = false; 
-      console.log(data)
-      this.state.list = data.docs; 
+    if (path === "list" || path === "loading") {
+      this.render();
     }
   }
 
@@ -50,6 +54,8 @@ export class MainView extends AbstractView {
   render() {
     const main = document.createElement("div");
     main.append(new Search(this.state).render());
+
+    main.append(new CardList(this.appState, this.state).render());
 
     this.app.innerHTML = "";
     this.app.append(main);

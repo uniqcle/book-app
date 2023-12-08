@@ -1099,6 +1099,29 @@
     }
   }
 
+  class CardList extends DivComponent {
+    constructor(appState, parentState) {
+      super();
+      this.appState = appState;
+      this.parentState = parentState;
+    }
+
+    render() {
+      if (this.parentState.loading) {
+        this.el.innerHTML = `<div class="card_list__loading"> Loading... </div>`;
+        return this.el;
+      }
+      this.el.innerHTML = `
+			<h3>Founded books – ${this.parentState.list.length}</h3>
+		`;
+
+      // const cardGrid = document.createElement("div");
+      // cardGrid.classList.add("card_grid");
+      // this.el.append(cardGrid);
+      return this.el;
+    }
+  }
+
   class MainView extends AbstractView {
     state = {
       list: [],
@@ -1125,14 +1148,17 @@
 
     async stateHook(path) {
       if (path === "searchQuery") {
-        //this.render();
+        this.state.loading = true;
+        const data = await this.getBooks(
+          this.state.stateQuery,
+          this.state.offset
+        );
+        this.state.loading = false;
+        this.state.list = data.docs;
+      }
 
-        console.log(this.state);
-        this.state.loading = true; 
-        const data = await this.getBooks(this.state.stateQuery, this.state.offset); 
-        this.state.loading = false; 
-        console.log(data);
-        this.state.list = data.docs; 
+      if (path === "list" || path === "loading") {
+        this.render();
       }
     }
 
@@ -1146,6 +1172,8 @@
     render() {
       const main = document.createElement("div");
       main.append(new Search(this.state).render());
+
+      main.append(new CardList(this.appState, this.state).render());
 
       this.app.innerHTML = "";
       this.app.append(main);
