@@ -1064,7 +1064,12 @@
     constructor(state) {
       super();
       this.state = state;
-    }
+  	}
+  	
+  	search() {
+  		const value = this.el.querySelector('input').value; 
+  		this.state.searchQuery = value; 
+  	}
 
     render() {
       this.el.classList.add("search");
@@ -1078,8 +1083,18 @@
 			/>
 			<img src="/static/search.svg" alt="search logo"/>
 		</div>
-		<button><img src="/static/search_icon.png" alt="search icon"/> </button>
+		<button ><img src="/static/search_icon.png" alt="search icon"/> </button>
 		`;
+
+      this.el
+        .querySelector("button")
+        .addEventListener("click", this.search.bind(this));
+
+      this.el.querySelector("input").addEventListener("keydown", (e) => {
+        if (e.code === "Enter") {
+          this.search();
+        }
+      });
       return this.el;
     }
   }
@@ -1096,6 +1111,8 @@
       super();
       this.appState = appState;
       this.appState = onChange(this.appState, this.appStateHook.bind(this));
+      this.state = onChange(this.state, this.stateHook.bind(this));
+
       this.setTitle("Search books");
     }
 
@@ -1104,6 +1121,26 @@
         //this.render();
         console.log(path);
       }
+    }
+
+    async stateHook(path) {
+      if (path === "searchQuery") {
+        //this.render();
+
+        console.log(this.state);
+        this.state.loading = true; 
+        const data = await this.getBooks(this.state.stateQuery, this.state.offset); 
+        this.state.loading = false; 
+        console.log(data);
+        this.state.list = data.docs; 
+      }
+    }
+
+    async getBooks(query, offset) {
+      const res = await fetch(
+        `https://openlibrary.org/search.json?q=${query}&offset=${offset}`
+      );
+      return await res.json();
     }
 
     render() {
