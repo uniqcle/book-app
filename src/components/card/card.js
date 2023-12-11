@@ -6,7 +6,15 @@ export class Card extends DivComponent {
     super();
     this.appState = appState;
     this.cardState = cardState;
-  }
+	}
+
+	#addToFav() {
+		this.appState.favourites.push(this.cardState); 
+	}
+	
+	#deleteFromFav() {
+		this.appState.favourites = this.appState.favourites.filter( b => b.key !== this.cardState.key)
+	}
 
   render() {
     this.el.classList.add("card");
@@ -14,8 +22,12 @@ export class Card extends DivComponent {
       (b) => b.key == this.cardState.key
     );
 
+    //console.log(this.cardState.key);
+
+    this.el.setAttribute("id", this.cardState.key);
+
     this.el.innerHTML = `
-			<div class="card_image">
+			<div class="card__image">
 				<img src="https://covers.openlibrary.org/b/olid/${
           this.cardState.cover_edition_key
         }-M.jpg" alt="Обложка" />
@@ -45,6 +57,19 @@ export class Card extends DivComponent {
 				</div>
 			</div>
 		`;
+
+    if (existInFav) {
+      this.el
+        .querySelector(".button__add")
+        .addEventListener("click", this.#deleteFromFav.bind(this));
+    } else {
+      this.el
+        .querySelector(".button__add")
+        .addEventListener("click", this.#addToFav.bind(this));
+    }
+
     return this.el;
   }
+    
+ 
 }

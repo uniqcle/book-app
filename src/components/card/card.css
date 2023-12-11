@@ -12,8 +12,8 @@
 	padding-top: 10px; 
 	justify-content: center;
 	align-items: start; 
-	height: 140px; 
-
+	/* height: 140px;  */
+	 
 }
 
 .card__info{

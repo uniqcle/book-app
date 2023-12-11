@@ -1104,7 +1104,15 @@
       super();
       this.appState = appState;
       this.cardState = cardState;
-    }
+  	}
+
+  	#addToFav() {
+  		this.appState.favourites.push(this.cardState); 
+  	}
+  	
+  	#deleteFromFav() {
+  		this.appState.favourites = this.appState.favourites.filter( b => b.key !== this.cardState.key);
+  	}
 
     render() {
       this.el.classList.add("card");
@@ -1112,8 +1120,12 @@
         (b) => b.key == this.cardState.key
       );
 
+      //console.log(this.cardState.key);
+
+      this.el.setAttribute("id", this.cardState.key);
+
       this.el.innerHTML = `
-			<div class="card_image">
+			<div class="card__image">
 				<img src="https://covers.openlibrary.org/b/olid/${
           this.cardState.cover_edition_key
         }-M.jpg" alt="Обложка" />
@@ -1143,8 +1155,21 @@
 				</div>
 			</div>
 		`;
+
+      if (existInFav) {
+        this.el
+          .querySelector(".button__add")
+          .addEventListener("click", this.#deleteFromFav.bind(this));
+      } else {
+        this.el
+          .querySelector(".button__add")
+          .addEventListener("click", this.#addToFav.bind(this));
+      }
+
       return this.el;
     }
+      
+   
   }
 
   // import { Card } from "../../card/card.js";
@@ -1202,10 +1227,15 @@
       this.setTitle("Search books");
     }
 
+    destroy() {
+      onChange.unsubscribe(this.appState);
+      onChange.unsubscribe(this.state);
+    }
+
     appStateHook(path) {
       if (path === "favourites") {
         //this.render();
-        console.log(path);
+        this.render();
       }
     }
 
