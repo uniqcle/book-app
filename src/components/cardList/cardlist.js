@@ -23,12 +23,15 @@ export class CardList extends DivComponent {
     const cardGrid = document.createElement("div");
     cardGrid.classList.add("card_grid");
     this.el.append(cardGrid);
-    for (let card of this.parentState.list) {
-      if (!card.cover_edition_key) {
-        //console.log(card.cover_edition_key);
-        continue;
-      } else {
-        cardGrid.append(new Card(this.appState, card).render());
+
+    if (this.parentState.list) {
+      for (let card of this.parentState.list) {
+        if (!card.cover_edition_key) {
+          //console.log(card.cover_edition_key);
+          continue;
+        } else {
+          cardGrid.append(new Card(this.appState, card).render());
+        }
       }
     }
 

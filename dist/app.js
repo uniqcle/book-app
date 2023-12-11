@@ -1193,12 +1193,15 @@
       const cardGrid = document.createElement("div");
       cardGrid.classList.add("card_grid");
       this.el.append(cardGrid);
-      for (let card of this.parentState.list) {
-        if (!card.cover_edition_key) {
-          //console.log(card.cover_edition_key);
-          continue;
-        } else {
-          cardGrid.append(new Card(this.appState, card).render());
+
+      if (this.parentState.list) {
+        for (let card of this.parentState.list) {
+          if (!card.cover_edition_key) {
+            //console.log(card.cover_edition_key);
+            continue;
+          } else {
+            cardGrid.append(new Card(this.appState, card).render());
+          }
         }
       }
 
@@ -1281,8 +1284,50 @@
     }
   }
 
+  class FavsView extends AbstractView {
+    constructor(appState) {
+      super();
+      this.appState = appState;
+      this.appState = onChange(this.appState, this.appStateHook.bind(this));
+      this.setTitle("Мои книги");
+    }
+
+    destroy() {
+      onChange.unsubscribe(this.appState);
+    }
+
+    appStateHook(path) {
+      if (path === "favorites") {
+        this.render();
+      }
+    }
+
+    render() {
+      console.log(this.appState);
+
+      const main = document.createElement("div");
+      main.innerHTML = `
+			<h1>Избранное</h1>
+		`;
+      main.append(
+        new CardList(this.appState, { list: this.appState.favorites }).render()
+      );
+      this.app.innerHTML = "";
+      this.app.append(main);
+      this.renderHeader();
+    }
+
+    renderHeader() {
+      const header = new Header(this.appState).render();
+      this.app.prepend(header);
+    }
+  }
+
   class App {
-    routes = [{ path: "", view: MainView }];
+    routes = [
+      { path: "", view: MainView },
+      { path: "#favourites", view: FavsView },
+    ];
 
     appState = {
       favourites: [],
