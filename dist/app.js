@@ -1099,6 +1099,56 @@
     }
   }
 
+  class Card extends DivComponent {
+    constructor(appState, cardState) {
+      super();
+      this.appState = appState;
+      this.cardState = cardState;
+    }
+
+    render() {
+      this.el.classList.add("card");
+      const existInFav = this.appState.favourites.find(
+        (b) => b.key == this.cardState.key
+      );
+
+      this.el.innerHTML = `
+			<div class="card_image">
+				<img src="https://covers.openlibrary.org/b/olid/${
+          this.cardState.cover_edition_key
+        }-M.jpg" alt="Обложка" />
+			</div>
+			<div class="card__info">
+				<div class="card__tag">
+					${this.cardState.subject ? this.cardState.subject[0] : "Title by default"}
+				</div>
+				<div class="card__name">
+					${this.cardState.title}
+				</div>
+				<div class="card__author">
+					${
+            this.cardState.author_name
+              ? this.cardState.author_name[0]
+              : "Author by default"
+          }
+				</div>
+				<div class="card__footer">
+					<button class="button__add ${existInFav ? "button__active" : ""}">
+						${
+              existInFav
+                ? '<img src="/static/favorites.svg" />'
+                : '<img src="/static/favorites_white.svg" />'
+            }
+					</button>
+				</div>
+			</div>
+		`;
+      return this.el;
+    }
+  }
+
+  // import { Card } from "../../card/card.js";
+
   class CardList extends DivComponent {
     constructor(appState, parentState) {
       super();
@@ -1112,8 +1162,20 @@
         return this.el;
       }
       this.el.innerHTML = `
-			<h3>Founded books – ${this.parentState.list.length}</h3>
+			<h3>Founded books – ${this.parentState.numFound}</h3>
 		`;
+
+      const cardGrid = document.createElement("div");
+      cardGrid.classList.add("card_grid");
+      this.el.append(cardGrid);
+      for (let card of this.parentState.list) {
+        if (!card.cover_edition_key) {
+          //console.log(card.cover_edition_key);
+          continue;
+        } else {
+          cardGrid.append(new Card(this.appState, card).render());
+        }
+      }
 
       // const cardGrid = document.createElement("div");
       // cardGrid.classList.add("card_grid");
@@ -1125,6 +1187,7 @@
   class MainView extends AbstractView {
     state = {
       list: [],
+      numFound: 0,
       loading: false,
       searchQuery: undefined,
       offset: 0,
@@ -1154,6 +1217,8 @@
           this.state.offset
         );
         this.state.loading = false;
+
+        this.state.numFound = data.numFound;
         this.state.list = data.docs;
       }
 

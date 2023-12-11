@@ -1,5 +1,8 @@
 import { DivComponent } from "../../common/div-component.js";
+import { Card } from "../card/card.js";
+
 import "./cardlist.css";
+// import { Card } from "../../card/card.js";
 
 export class CardList extends DivComponent {
   constructor(appState, parentState) {
@@ -14,8 +17,20 @@ export class CardList extends DivComponent {
       return this.el;
     }
     this.el.innerHTML = `
-			<h3>Founded books – ${this.parentState.list.length}</h3>
+			<h3>Founded books – ${this.parentState.numFound}</h3>
 		`;
+
+    const cardGrid = document.createElement("div");
+    cardGrid.classList.add("card_grid");
+    this.el.append(cardGrid);
+    for (let card of this.parentState.list) {
+      if (!card.cover_edition_key) {
+        //console.log(card.cover_edition_key);
+        continue;
+      } else {
+        cardGrid.append(new Card(this.appState, card).render());
+      }
+    }
 
     // const cardGrid = document.createElement("div");
     // cardGrid.classList.add("card_grid");
